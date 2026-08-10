@@ -5,6 +5,9 @@ live in exactly one place, matching the notebook's Stage 1 decisions.
 """
 import pandas as pd
 import streamlit as st
+from pathlib import Path
+
+DATA_PATH = Path(__file__).parent / "hotel_bookings_data.csv"
 
 COLORS = {"City Hotel": "#4C72B0", "Resort Hotel": "#DD8452"}
 MONTH_ORDER = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -12,16 +15,16 @@ MONTH_ORDER = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 
 
 @st.cache_data
-def load_raw_data(path: str = "hotel_bookings_data.csv") -> pd.DataFrame:
+def load_raw_data(path: str = None) -> pd.DataFrame:
+    if path is None:
+        path = DATA_PATH
     return pd.read_csv(path)
 
 
 @st.cache_data
-def get_clean_data(path: str = "hotel_bookings_data.csv"):
-    """Applies the same Stage 1 cleaning decisions as the analysis notebook.
-    Returns (clean_df, cleaning_log) where cleaning_log is a list of
-    (step, detail, rows_before, rows_after) tuples for display on the Data Quality page.
-    """
+def get_clean_data(path: str = None):
+    if path is None:
+        path = DATA_PATH
     df = load_raw_data(path)
     log = []
     clean = df.copy()
